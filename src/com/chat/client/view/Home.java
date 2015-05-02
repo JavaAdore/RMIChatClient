@@ -4,6 +4,7 @@ package com.chat.client.view;
 import com.chat.client.ClientController;
 import com.chat.client.utils.Utils;
 import com.chat.common.Hobies;
+import com.chat.common.Message;
 import com.chat.common.SearchingCriteria;
 import com.chat.common.User;
 
@@ -17,7 +18,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ComboBoxModel;
@@ -36,20 +39,24 @@ public class Home extends javax.swing.JFrame implements HomeView {
 
     /** Creates new form Home */
     ClientController clientController;
-    User currentUser;
+    UserDTO currentUser;
     List<String> blackList = new ArrayList();
-    SearchingCriteria searchingCriteria ;
-    
+    SearchingCriteria searchingCriteria;
+
     UserDTO currentPeer;
 
-    public Home(ClientController clientController, User currentUser) {
+    Map<String, ChatView> openChat = new HashMap();
+
+    public Home(ClientController clientController, UserDTO currentUser) {
         initComponents();
         this.clientController = clientController;
         this.clientController.setHomeView(this);
         this.currentUser = currentUser;
         initializeUpdateProfileModels();
         initiaizeSearchModels();
+        resultPanel.setVisible(false);
         setLocationRelativeTo(null);
+        
         setVisible(true);
 
     }
@@ -247,7 +254,6 @@ public class Home extends javax.swing.JFrame implements HomeView {
         searchButton = new javax.swing.JButton();
         resultPanel = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
@@ -376,7 +382,7 @@ public class Home extends javax.swing.JFrame implements HomeView {
                             .addComponent(removeKeyword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(addHobby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(removeHobby, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(275, Short.MAX_VALUE))
+                .addContainerGap(303, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,11 +510,19 @@ public class Home extends javax.swing.JFrame implements HomeView {
 
         resultPanel.setBackground(new java.awt.Color(204, 204, 255));
 
-        jButton3.setText("Online Chat");
-
-        jButton4.setText("Send Mail");
+        jButton3.setText("Connect");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Next Result");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jLabel18.setText("User Name");
 
@@ -546,10 +560,9 @@ public class Home extends javax.swing.JFrame implements HomeView {
                 .addContainerGap()
                 .addGroup(resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(resultPanelLayout.createSequentialGroup()
+                        .addGap(71, 71, 71)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton5)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(resultPanelLayout.createSequentialGroup()
@@ -626,7 +639,6 @@ public class Home extends javax.swing.JFrame implements HomeView {
                         .addGap(130, 130, 130)))
                 .addGroup(resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
-                    .addComponent(jButton4)
                     .addComponent(jButton5)))
         );
 
@@ -679,7 +691,7 @@ public class Home extends javax.swing.JFrame implements HomeView {
                                     .addComponent(addSeachHobby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -743,7 +755,7 @@ public class Home extends javax.swing.JFrame implements HomeView {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(editProfileTab, javax.swing.GroupLayout.PREFERRED_SIZE, 651, Short.MAX_VALUE)
+            .addComponent(editProfileTab, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -820,7 +832,17 @@ public class Home extends javax.swing.JFrame implements HomeView {
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
 
-         searchingCriteria = new SearchingCriteria();
+        constructSearchingCriteria();
+        clientController.findBestMatch(currentUser, searchingCriteria, blackList);
+      
+     
+    }//GEN-LAST:event_searchButtonActionPerformed
+    
+    
+    private void constructSearchingCriteria()
+    {
+        blackList.clear();
+        searchingCriteria = new SearchingCriteria();
         if (searchCountriesComboBox.getModel().getSelectedItem() != null) {
             searchingCriteria.setCountry(((CountryCode) searchCountriesComboBox.getModel().getSelectedItem()).getNumeric() +
                                          "");
@@ -839,11 +861,31 @@ public class Home extends javax.swing.JFrame implements HomeView {
         searchingCriteria.setHobbies(Collections.list(((DefaultListModel) hobbiesList.getModel()).elements()));
 
         searchingCriteria.setKeywords(Collections.list(((DefaultListModel) searchKeywordsList.getModel()).elements()));
-        
-        clientController.findBestMatch( currentUser, searchingCriteria,  blackList);
-      
-     
-    }//GEN-LAST:event_searchButtonActionPerformed
+
+    }
+    
+    private ChatView createOrLoadChatView(String email) {
+        ChatView chatView = openChat.get(email);
+        if (chatView == null) {
+            chatView = new ChatForm(clientController, currentUser, currentPeer);
+            openChat.put(email, chatView);
+        }
+        chatView.displayScreen();
+        return chatView;
+    }
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        ChatView chatView = createOrLoadChatView(currentPeer.getEmail());
+       
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        blackList.add(currentPeer.getEmail());
+        clientController.findBestMatch(currentUser, searchingCriteria, blackList);
+
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     private boolean validateAddingNewSearchKeyword() {
         return searchNewKeyword.getText() != null && searchNewKeyword.getText().trim().length() > 0;
@@ -853,35 +895,34 @@ public class Home extends javax.swing.JFrame implements HomeView {
     public boolean validateAddingNewKeyword() {
         return newKeyword.getText() != null && newKeyword.getText().trim().length() > 0;
     }
-    
-    private void loadCurrentPeerData(UserDTO currentPeer)
-    {
-        Utils.fillTextFieldWith(peerUserName , currentPeer.getUserName());
-        Utils.fillTextFieldWith(peerEmail , currentPeer.getEmail());
-        Utils.fillTextFieldWith(peerGender , currentPeer.getGender()!=null ? currentPeer.getGender().toString():null);
-        Utils.fillTextFieldWith(peerCountry , currentPeer.getCountry()!=null? CountryCode.getByCode(Integer.parseInt(currentPeer.getCountry())).getName():null);
-        Utils.fillTextFieldWith(peerBirithYear , currentPeer.getBirthYear()!=null ? currentPeer.getBirthYear() +"":null);
-        peerHobbies.setModel( new DefaultListModel());
-        if(currentPeer.getHobbies()!=null )
-        {
-            for(Hobies hobby : currentPeer.getHobbies())
-            {
-                ((DefaultListModel)peerHobbies.getModel()).addElement(hobby.getValue());
+
+    private void loadCurrentPeerData(UserDTO currentPeer) {
+        Utils.fillTextFieldWith(peerUserName, currentPeer.getUserName());
+        Utils.fillTextFieldWith(peerEmail, currentPeer.getEmail());
+        Utils.fillTextFieldWith(peerGender,
+                                currentPeer.getGender() != null ? currentPeer.getGender().toString() : null);
+        Utils.fillTextFieldWith(peerCountry,
+                                currentPeer.getCountry() != null ?
+                                CountryCode.getByCode(Integer.parseInt(currentPeer.getCountry())).getName() : null);
+        Utils.fillTextFieldWith(peerBirithYear,
+                                currentPeer.getBirthYear() != null ? currentPeer.getBirthYear() + "" : null);
+        peerHobbies.setModel(new DefaultListModel());
+        if (currentPeer.getHobbies() != null) {
+            for (Hobies hobby : currentPeer.getHobbies()) {
+                ((DefaultListModel) peerHobbies.getModel()).addElement(hobby.getValue());
             }
         }
-        
-        
-        peerKeywords.setModel( new DefaultListModel());
-        if(currentPeer.getKeywords()!=null )
-        {
-            for(String keyWord : currentPeer.getKeywords())
-            {
-                ((DefaultListModel)peerKeywords.getModel()).addElement(keyWord);
+
+
+        peerKeywords.setModel(new DefaultListModel());
+        if (currentPeer.getKeywords() != null) {
+            for (String keyWord : currentPeer.getKeywords()) {
+                ((DefaultListModel) peerKeywords.getModel()).addElement(keyWord);
             }
         }
-        
+        resultPanel.setVisible(true);
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -925,7 +966,6 @@ public class Home extends javax.swing.JFrame implements HomeView {
     private javax.swing.JList hobbiesList;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1002,5 +1042,10 @@ public class Home extends javax.swing.JFrame implements HomeView {
         this.currentPeer = currentPeer;
         loadCurrentPeerData(currentPeer);
         SwingUtilities.updateComponentTreeUI(resultPanel);
+    }
+
+    @Override
+    public void recieveMessage(Message message) {
+        createOrLoadChatView(message.getSender()).displayChatMessage(message);
     }
 }

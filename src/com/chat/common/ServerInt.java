@@ -23,4 +23,6 @@ public interface ServerInt extends Serializable, Remote {
 
     public Feedback findBestMatch(User me, SearchingCriteria targetedUser,
                                  List<String> blackList) throws RemoteException;
+    
+    public Feedback sendMessageAsEmail(Message message) throws RemoteException;
 }

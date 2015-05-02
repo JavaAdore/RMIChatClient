@@ -2,6 +2,7 @@ package com.chat.client;
 
 import com.chat.common.Constants;
 import com.chat.common.Feedback;
+import com.chat.common.Message;
 import com.chat.common.SearchingCriteria;
 import com.chat.common.ServerInt;
 
@@ -83,5 +84,19 @@ public class ClientManagement {
             e.printStackTrace();
             return new Feedback(Feedback.FAILED, "Connection Failed");
         }
+    }
+
+    Feedback sendMessageAsMail(Message message) {
+        try {
+            return serverInt.sendMessageAsEmail(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new Feedback(Feedback.FAILED, "Connection Failed");
+        }
+    }
+
+    void recieveMessage(Message message) {
+        clientController.recieveMessage( message);
+        
     }
 }

@@ -4,6 +4,7 @@ import com.chat.client.view.HomeView;
 import com.chat.client.view.LoginView;
 import com.chat.common.ClientInt;
 import com.chat.common.Feedback;
+import com.chat.common.Message;
 import com.chat.common.SearchingCriteria;
 import com.chat.common.User;
 import com.chat.common.UserDTO;
@@ -54,7 +55,7 @@ public class ClientController {
     public void authenticate(String email, String password) {
         Feedback authenticationResult = clientManagement.authenticate(email, password);
         if (authenticationResult.isSuccess()) {
-            loginView.loginSuccessed((User) authenticationResult.getObject());
+            loginView.loginSuccessed((UserDTO) authenticationResult.getObject());
         } else {
             loginView.displayErrorMessage(authenticationResult.getMessage());
         }
@@ -99,6 +100,15 @@ public class ClientController {
             homeView.displayErrorMessage(feedback.getMessage());    
         }
         
+    }
+
+    public boolean sendMessageAsMail(Message message) {
+       Feedback feedback =  clientManagement.sendMessageAsMail(message);
+       return feedback.isSuccess();
+    }
+
+    void recieveMessage(Message message) {
+        homeView.recieveMessage(message);
     }
 }
 

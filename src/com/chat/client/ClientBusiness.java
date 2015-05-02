@@ -24,8 +24,15 @@ public class ClientBusiness extends UnicastRemoteObject implements ClientInt {
 
     @Override
     public Feedback recieveMessage(Message message) throws RemoteException {
-        // TODO Implement this method
-        return null;
+        try
+        {
+            clientManagement.recieveMessage( message);
+            return new Feedback(Feedback.SUCCESS,"Success");
+
+        }catch(Exception ex)
+        {
+            return new Feedback(Feedback.FAILED,"Failed");
+        }
     }
 
     @Override

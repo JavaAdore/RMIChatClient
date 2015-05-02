@@ -9,6 +9,8 @@ import com.chat.common.Feedback;
 
 import com.chat.common.User;
 
+import com.chat.common.UserDTO;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -206,7 +208,7 @@ public class LoginForm extends javax.swing.JFrame  implements LoginView{
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void loginSuccessed(User user) {
+    public void loginSuccessed(UserDTO user) {
         
         Utils.hideAndShow(this, new Home(clientController,user));
 
