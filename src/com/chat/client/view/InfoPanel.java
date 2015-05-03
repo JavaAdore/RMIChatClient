@@ -16,6 +16,12 @@ import javax.swing.DefaultListModel;
 public class InfoPanel extends javax.swing.JPanel {
 
     /** Creates new form InfoPanel */
+    public InfoPanel()
+    {
+        initComponents();
+
+        setVisible(false);    
+    }
     public InfoPanel(UserDTO currentPeer) {
         initComponents();
         loadCurrentPeerData(currentPeer);
@@ -180,6 +186,7 @@ public class InfoPanel extends javax.swing.JPanel {
                 ((DefaultListModel) peerKeywords.getModel()).addElement(keyWord);
             }
         }
+        setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -9,4 +9,8 @@ public interface HomeView {
     public void displayInfoMessage(String message);
     public void setCurrentPeer(UserDTO userDTO);
     public void recieveMessage(Message message);
+
+    public void userLoggedOut(UserDTO user);
+
+    public void userLoggedIn(UserDTO user);
 }

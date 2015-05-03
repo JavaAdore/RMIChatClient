@@ -17,15 +17,17 @@ import javax.swing.JOptionPane;
  *
  * @author orcl
  */
-public class LoginForm extends javax.swing.JFrame  implements LoginView{
+public class LoginForm extends javax.swing.JFrame implements LoginView {
 
     /** Creates new form Login */
 
     private ClientController clientController;
+
     public LoginForm(ClientController clientController) {
         initComponents();
         this.clientController = clientController;
         setLocationRelativeTo(null);
+        setTitle("Date2Date Login");
     }
 
     /** This method is called from within the constructor to
@@ -122,33 +124,45 @@ public class LoginForm extends javax.swing.JFrame  implements LoginView{
     }//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    if(emailAndPassowrdHasBeenEntered() == false)
-    return ;
-    boolean connectionInitiated = false;
-    while(connectionInitiated==false)
-    {
-         String port = null;
-        String host =null;
-        while(host == null )
-        {
-           host =  JOptionPane.showInputDialog(this, "Please Enter Host ip address");
+        if (emailAndPassowrdHasBeenEntered() == false)
+            return;
+        boolean connectionInitiated = clientController.alreadyConnectedToServer();
+        while (connectionInitiated == false) {
+            String port = null;
+            String host = null;
+            while (host == null) {
+                host = JOptionPane.showInputDialog(this, "Please Enter Host ip address");
+                if (host == null) {
+                    if (decidedToLeave()) {
+                        return;
+
+                    }
+                }
+            }
+
+            while (port == null || Utils.isAPortNumber(port) == false) {
+                port = JOptionPane.showInputDialog(this, "Please Enter Port Number");
+                if (port == null) {
+                    if (decidedToLeave()) {
+                        return;
+                    }
+                }
+            }
+
+            connectionInitiated = clientController.tryToConnectToServer(host, port);
         }
-        
-        while(port == null || Utils.isAPortNumber(port)==false)
-        {
-           port =  JOptionPane.showInputDialog(this, "Please Enter Port Number");
-            
+        if (connectionInitiated) {
+            clientController.authenticate(email.getText(), password.getText());
         }
-        
-       connectionInitiated =  clientController.tryToConnectToServer(host,port);
-    }
-        
-        clientController.authenticate(email.getText() , password.getText());
-        
         
         
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    private boolean decidedToLeave() {
+        int desction = JOptionPane.showConfirmDialog(this, "Do you want to cancel ?");
+        return desction == JOptionPane.YES_OPTION;
+    }
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         
         Utils.hideAndShow(this, new RegistrationForm(clientController));
@@ -185,16 +199,16 @@ public class LoginForm extends javax.swing.JFrame  implements LoginView{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ClientController clientController = new ClientController();
-                 LoginForm login =   new LoginForm(clientController);
-                 clientController.setLoginView(login);
-                 login.setVisible(true);
+                LoginForm login = new LoginForm(clientController);
+                clientController.setLoginView(login);
+                login.setVisible(true);
             }
         });
     }
-    
-    public boolean emailAndPassowrdHasBeenEntered()
-    {
-        return email.getText()!=null && email.getText().trim().length()>0 && password.getText()!=null && password.getText().trim().length()>0;    
+
+    public boolean emailAndPassowrdHasBeenEntered() {
+        return email.getText() != null && email.getText().trim().length() > 0 && password.getText() != null &&
+               password.getText().trim().length() > 0;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -209,13 +223,13 @@ public class LoginForm extends javax.swing.JFrame  implements LoginView{
 
     @Override
     public void loginSuccessed(UserDTO user) {
-        
-        Utils.hideAndShow(this, new Home(clientController,user));
+
+        Utils.hideAndShow(this, new Home(clientController, user));
 
     }
 
     @Override
     public void displayErrorMessage(String message) {
-        Utils.displayErrorMessage(this,message);
+        Utils.displayErrorMessage(this, message);
     }
 }

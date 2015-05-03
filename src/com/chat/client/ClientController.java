@@ -110,6 +110,20 @@ public class ClientController {
     void recieveMessage(Message message) {
         homeView.recieveMessage(message);
     }
+
+
+    public void logOut(UserDTO userDTO) {
+        clientManagement.logOut(userDTO);
+
+    }
+
+    void userloggedOut(UserDTO user) {
+        homeView.userLoggedOut(user);
+    }
+
+    void userLoggedIn(UserDTO user) {
+        homeView.userLoggedIn(user);
+    }
 }
 
 

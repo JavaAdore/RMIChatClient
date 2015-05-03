@@ -37,16 +37,15 @@ public class ClientBusiness extends UnicastRemoteObject implements ClientInt {
 
     @Override
     public void logout(UserDTO userDTO) throws RemoteException {
-        // TODO Implement this method
+    
     }
 
     @Override
     public void userLoggedIn(UserDTO user) throws RemoteException {
-        // TODO Implement this method
-    }
+clientManagement.userLoggedIn(user) ;   }
 
     @Override
     public void userLoggedOut(UserDTO user) throws RemoteException {
-        // TODO Implement this method
+        clientManagement.userloggedOut(user);
     }
 }

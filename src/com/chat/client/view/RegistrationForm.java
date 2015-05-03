@@ -26,9 +26,11 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
         ComboBoxModel model = new DefaultComboBoxModel(User.SubscriptionType.values());
         subscriptionType.setModel(model);
         setLocationRelativeTo(null);
-      
+        setTitle("Date2Date Registration");
     }
 
+
+   
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -84,8 +86,6 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
             }
         });
 
-        password.setText("jPasswordField1");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,7 +120,7 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(initialCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,10 +156,9 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(26, 26, 26))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,25 +258,34 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
     
     private void connectToServer()
     {
-       boolean connectionInitiated =  clientController.alreadyConnectedToServer();
-           while(connectionInitiated==false)
-           {
-                String port = null;
-               String host =null;
-               while(host == null )
-               {
-                  host =  JOptionPane.showInputDialog(this, "Please Enter Host ip address");
-               }
-               
-               while(port == null)
-               {
-                  port =  JOptionPane.showInputDialog(this, "Please Enter Port Number");
-                   
-               }
-               
-              connectionInitiated =  clientController.tryToConnectToServer(host,port);
-           }
-       
-       
+        boolean connectionInitiated = clientController.alreadyConnectedToServer();
+        while (connectionInitiated == false) {
+            String port = null;
+            String host = null;
+            while (host == null) {
+                host = JOptionPane.showInputDialog(this, "Please Enter Host ip address");
+                if (host == null) {
+                    if (decidedToLeave()) {
+                        return;
+
+                    }
+                }
+            }
+            while (port == null || Utils.isAPortNumber(port) == false) {
+                port = JOptionPane.showInputDialog(this, "Please Enter Port Number");
+                if (port == null) {
+                    if (decidedToLeave()) {
+                        return;
+                    }
+                }
+            }
+
+            connectionInitiated = clientController.tryToConnectToServer(host, port);
+        }
+    }
+    
+    private boolean decidedToLeave() {
+        int desction = JOptionPane.showConfirmDialog(this, "Do you want to cancel ?");
+        return desction == JOptionPane.YES_OPTION;
     }
 }
