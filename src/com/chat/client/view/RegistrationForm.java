@@ -27,6 +27,7 @@ public class RegistrationForm extends javax.swing.JFrame implements Registration
         subscriptionType.setModel(model);
         setLocationRelativeTo(null);
         setTitle("Date2Date Registration");
+        setResizable(false);
     }
 
 
