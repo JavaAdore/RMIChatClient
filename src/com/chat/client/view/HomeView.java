@@ -13,4 +13,6 @@ public interface HomeView {
     public void userLoggedOut(UserDTO user);
 
     public void userLoggedIn(UserDTO user);
+
+    public void cick();
 }

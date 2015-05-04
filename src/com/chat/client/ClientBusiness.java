@@ -48,4 +48,9 @@ clientManagement.userLoggedIn(user) ;   }
     public void userLoggedOut(UserDTO user) throws RemoteException {
         clientManagement.userloggedOut(user);
     }
+
+    @Override
+    public void cick() throws RemoteException {
+        clientManagement.cick();
+    }
 }

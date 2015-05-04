@@ -124,6 +124,11 @@ public class ClientController {
     void userLoggedIn(UserDTO user) {
         homeView.userLoggedIn(user);
     }
+
+    void cick() {
+        
+        homeView.cick();
+    }
 }
 
 

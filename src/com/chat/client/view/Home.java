@@ -1279,4 +1279,9 @@ public class Home extends javax.swing.JFrame implements HomeView {
             }
         }
     }
+
+    @Override
+    public void cick() {
+        logout();
+    }
 }

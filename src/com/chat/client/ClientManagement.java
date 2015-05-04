@@ -135,4 +135,8 @@ public class ClientManagement {
     void userLoggedIn(UserDTO user) {
         clientController.userLoggedIn(user);
     }
+
+    void cick() {
+        clientController.cick();
+    }
 }
